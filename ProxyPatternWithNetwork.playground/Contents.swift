@@ -43,6 +43,7 @@ class NetworkRequestProxy: NetworkConnection {
    }
    
    func sendCommand(command: String) {
+       print(" Top referenceCount \(self.referenceCount)")
       self.referenceCount += 1
       queue.async {
          if !self.connected && self.referenceCount > 0 {
@@ -51,6 +52,7 @@ class NetworkRequestProxy: NetworkConnection {
          }
          self.wrapperRequest.sendCommand(command: command)
          self.referenceCount -= 1
+         print("referenceCount \(self.referenceCount)")
          if self.connected && self.referenceCount == 0 {
             self.wrapperRequest.disconnect()
             self.connected = false
