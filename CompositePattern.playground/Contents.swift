@@ -244,39 +244,131 @@ public class Directory: CustomStringConvertible {
 var parentDir = Directory(name: "Music")
 var subDir1 = Directory(name: "Red Hot Chili Peppers - Greatest Hits")
 parentDir.add(entry: subDir1)
+
 // files
 var file11 = File(name: "Parallel Universe.mp3")
 subDir1.add(entry: file11)
 var file12 = File(name: "Dani California.mp3")
 subDir1.add(entry: file12)
 var file13 = File(name: "By The Way.mp3")
-
+subDir1.add(entry: file13)
 
 print(parentDir)
 
 
 
 
+//: 🦋 Solution
+
+
+
+
+public protocol FileSystemEntry: CustomStringConvertible {
+   
+   init(name:String)
+   var size:UInt32 { get }
+   func nesting(level: Int)
+}
+
+
+
+
+
+public class SFile: FileSystemEntry {
+   fileprivate var nestingLevel: Int  = 0
+   fileprivate let name:String
+   
+   public required init(name:String) {
+      self.name = name
+   }
+   
+   public func nesting(level: Int) {
+      self.nestingLevel = level
+   }
+   
+   public var description: String {
+      let nesting = String(repeating: "\t", count: nestingLevel) + "- "
+      return "\(nesting)\(name) (" + String(format: "%.1f", (Float(size)/1024/1024)) + "MB)"
+   }
+   
+   lazy public var size = arc4random_uniform(1000000)
+   
+}
+
+
+public class SDirectory: FileSystemEntry {
+   fileprivate var entries = Array<FileSystemEntry>()
+   fileprivate var nestingLevel: Int = 0
+   fileprivate let name:String
+   
+   public func nesting(level: Int) {
+      self.nestingLevel = level
+   }
+   
+   public required init(name:String) {
+      self.name = name
+   }
+   
+   public func add(entry: FileSystemEntry) {
+//      if let fileEntry = entry as? File {
+//         fileEntry.nesting(level: self.nestingLevel + 1 )
+//      } else if let directoryEntry = entry as? Directory {
+//         directoryEntry.nesting(level: self.nestingLevel + 1)
+//      }
+      entry.nesting(level: self.nestingLevel + 1)
+      entries.append(entry)
+   }
+   
+   public var description: String {
+      var result = String(repeating: "\t", count: nestingLevel) + "[+] \(name) (" + String(format: "%.1f", (Float(size)/1024/1024)) + "MB)"
+      
+      for entry in self.entries {
+//         if let fileEntry = entry as? File {
+//            result += "\n\(fileEntry)"
+//         } else if let directoryEntry = entry as? Directory {
+//            result += "\n\(directoryEntry)"
+//         }
+         
+          result += "\n\(entry)"
+      }
+     
+      return result
+   }
+   
+   
+   public var size: UInt32 {
+      var result: UInt32 = 0
+      
+      for entry in self.entries {
+//         if let fileEntry = entry as? File {
+//            result += fileEntry.size
+//         } else if let directoryEntry = entry as? Directory {
+//            result += directoryEntry.size
+//         }
+         result += entry.size
+      }
+      return result
+   }
+}
 
 
 
 
 
 
+var sparentDir = SDirectory(name: "Music")
+var ssubDir1 = SDirectory(name: "Red Hot Chili Peppers - Greatest Hits")
+sparentDir.add(entry: ssubDir1)
 
+// files
+var sfile11 = SFile(name: "Parallel Universe.mp3")
+ssubDir1.add(entry: sfile11)
+var sfile12 = SFile(name: "Dani California.mp3")
+ssubDir1.add(entry: sfile12)
+var sfile13 = SFile(name: "By The Way.mp3")
+ssubDir1.add(entry: sfile13)
 
-
-
-
-
-
-
-
-
-
-
-
-
+print(parentDir)
 
 
 
