@@ -159,6 +159,22 @@ class EndOfLineDecorator: DiscountDecorator {
 }
 
 
+let daccount = CustomerAccount(name: "Joe")
+daccount.addPurchase(Purchase(product: "Red Hat", price: 10))
+daccount.addPurchase(Purchase(product: "Scarf", price: 20))
+
+daccount.addPurchase(EndOfLineDecorator(purchase: BlackFrindayDecorator(purchase:
+   SPurchaseWithDelivery(purchase: SPurchaseWithGifWrap(purchase: Purchase(product: "Sunglassess", price: 25))))))
+daccount.printAccount()
+
+
+for p in daccount.purchases {
+   if let d = p as? DiscountDecorator {
+      print("\(p) has \(d.coundDiscounts()) discounts)")
+   } else {
+      print("\(p) has no discounts")
+   }
+}
 
 let saccount = CustomerAccount(name:"Joe");
 //saccount.addPurchase(Purchase(product: "Red Hat", price: 10))
@@ -244,6 +260,31 @@ decorator.doOperation()
 //
 //
 //print(childOne.description)
+
+
+class CheckSuper {
+   func printSuper() {
+      print("Super")
+   }
+}
+
+class ChildOne: CheckSuper {
+   override func printSuper() {
+      print("Hello i am child one")
+   }
+}
+
+class ChildTwo: ChildOne {
+   func printChild2() {
+      super.printSuper()
+   }
+}
+
+ChildTwo().printChild2()
+
+
+
+
 
 
 
